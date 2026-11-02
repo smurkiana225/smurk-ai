@@ -66,6 +66,43 @@ def current_ask(direction):
     value = market.get("yesAskCents" if direction == "UP" else "noAskCents")
     return None if value is None else float(value)
 
+def current_spread(direction):
+    """Return the quoted spread for the selected binary-contract side."""
+    if not market or market.get("status") != "live":
+        return None
+    bid_key, ask_key = (
+        ("yesBidCents", "yesAskCents") if direction == "UP"
+        else ("noBidCents", "noAskCents")
+    )
+    bid, ask = market.get(bid_key), market.get(ask_key)
+    if bid is None or ask is None:
+        return None
+    return max(0.0, float(ask) - float(bid))
+
+
+def evaluate_entry(direction, ask_cents, spread_cents, fee_cents,
+                   directional_signal, min_net_upside_cents=10.0,
+                   max_spread_cents=5.0):
+    """Conservative quote/economics gate; not a prediction of win probability."""
+    if ask_cents is None:
+        return {"ok": False, "reason": "No live ask is available for this side."}
+    ask = float(ask_cents)
+    fee = max(0.0, float(fee_cents))
+    if not 0 < ask < 100:
+        return {"ok": False, "reason": "The displayed ask is outside a valid contract price."}
+    gross_upside = 100.0 - ask
+    net_upside = gross_upside - fee
+    if directional_signal != ("BUY_UP" if direction == "UP" else "BUY_DOWN"):
+        return {"ok": False, "reason": "The directional signal does not confirm this side."}
+    if spread_cents is None:
+        return {"ok": False, "reason": "The side's bid/ask spread is unavailable."}
+    if float(spread_cents) > max_spread_cents:
+        return {"ok": False, "reason": f"Spread is too wide ({float(spread_cents):.2f}¢; limit {max_spread_cents:.2f}¢)."}
+    if net_upside < min_net_upside_cents:
+        return {"ok": False, "reason": f"Maximum net upside is only {net_upside:.2f}¢ per contract; minimum is {min_net_upside_cents:.2f}¢."}
+    return {"ok": True, "reason": "Direction, spread, and estimated payout screen passed. This is not a guarantee."}
+
+
 def market_countdown(close_time):
     if not close_time:
         return None
@@ -264,6 +301,42 @@ if page == "Overview":
         st.write("• " + str(reason))
     st.caption(snapshot.get("disclaimer", "Signals are research indicators, not verified win probabilities."))
 
+    st.divider()
+    st.subheader("Entry price & payout filter")
+    st.caption("Paper-only screening. Kalshi quotes and fees can change; this does not submit orders.")
+    fee_estimate = st.number_input(
+        "Estimated Kalshi fee per contract (cents)",
+        min_value=0.0, max_value=10.0, value=0.0, step=0.01,
+        key="overview_fee_estimate"
+    )
+    st.caption("Enter the fee estimate applicable to your order. Zero is only a placeholder, not confirmation that fees are zero.")
+    up_ask = current_ask("UP")
+    down_ask = current_ask("DOWN")
+    up_spread = current_spread("UP")
+    down_spread = current_spread("DOWN")
+    up_result = evaluate_entry("UP", up_ask, up_spread, fee_estimate, signal)
+    down_result = evaluate_entry("DOWN", down_ask, down_spread, fee_estimate, signal)
+    e1, e2 = st.columns(2)
+    for col, label, ask_value, spread_value, result in [
+        (e1, "UP / YES", up_ask, up_spread, up_result),
+        (e2, "DOWN / NO", down_ask, down_spread, down_result)
+    ]:
+        with col:
+            st.markdown(f"**{label}**")
+            st.write("Ask:", cents(ask_value), "| Spread:", cents(spread_value))
+            if ask_value is not None:
+                gross = 100.0 - float(ask_value)
+                net = gross - float(fee_estimate)
+                st.write(f"Cost per contract: {float(ask_value):.2f}¢ before fees")
+                st.write(f"Maximum net profit if correct: {net:.2f}¢ per contract (estimated)")
+                st.write(f"Maximum loss if incorrect: {float(ask_value) + float(fee_estimate):.2f}¢ per contract (estimated)")
+            if result["ok"]:
+                st.success("PAPER SCREEN: PASSED")
+            else:
+                st.warning("PAPER SCREEN: WAIT")
+            st.caption(result["reason"])
+    st.info("The filter requires a matching directional signal, a known spread no wider than 5¢, and at least 10¢ estimated net upside per contract. These are conservative screening rules, not proven profitable thresholds.")
+
 elif page == "Technical Analysis":
     st.subheader("Technical indicators")
     cols = st.columns(4)
@@ -314,6 +387,19 @@ elif page == "Trade Planner":
     if live_ask is not None:
         st.success(f"Current {side} ask: {live_ask:.2f}¢")
         default_entry = min(99.0, max(1.0, live_ask))
+        spread_now = current_spread(side)
+        st.write("Current side spread:", cents(spread_now))
+        fee_for_screen = st.number_input(
+            "Estimated fee per contract for entry screen (cents)",
+            min_value=0.0, max_value=10.0, value=0.0, step=0.01,
+            key="planner_fee_screen"
+        )
+        screen = evaluate_entry(side, live_ask, spread_now, fee_for_screen, signal)
+        if screen["ok"]:
+            st.success("Entry screen passed — paper analysis only.")
+        else:
+            st.warning("WAIT — " + screen["reason"])
+        st.caption("A passed screen is not a trade instruction or a prediction of success.")
     else:
         st.info("A live ask is unavailable. Enter the price you are considering manually.")
         default_entry = 50.0
