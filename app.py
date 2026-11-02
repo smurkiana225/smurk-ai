@@ -119,9 +119,69 @@ def candle_chart(data, height=440):
     )
     st.plotly_chart(fig, use_container_width=True)
 
+def calculate_directional_scores(snapshot, indicators):
+    """Rebuild the directional scores from displayed live indicators.
+
+    This fallback prevents a missing/old cached score field from displaying
+    0/7 when the underlying BTC indicators are available.
+    """
+    up = down = 0
+    candles = pd.DataFrame(snapshot.get("candles", []))
+    close = None
+    if not candles.empty and "close" in candles.columns:
+        candles = candles.sort_values("time")
+        close = float(candles.iloc[-1]["close"])
+    ema9 = indicators.get("ema9")
+    ema21 = indicators.get("ema21")
+    ema50 = indicators.get("ema50")
+    rsi = indicators.get("rsi")
+    macd_info = indicators.get("macd") or {}
+    hist = macd_info.get("histogram")
+    momentum = indicators.get("momentumPct")
+    volume_ratio = indicators.get("volumeRatio")
+
+    if None not in (ema9, ema21, ema50):
+        if float(ema9) > float(ema21) > float(ema50):
+            up += 2
+        elif float(ema9) < float(ema21) < float(ema50):
+            down += 2
+    if close is not None and ema9 is not None:
+        if close > float(ema9):
+            up += 1
+        elif close < float(ema9):
+            down += 1
+    if rsi is not None:
+        if 52 <= float(rsi) <= 68:
+            up += 1
+        elif 32 <= float(rsi) <= 48:
+            down += 1
+    if hist is not None:
+        if float(hist) > 0:
+            up += 1
+        elif float(hist) < 0:
+            down += 1
+    if momentum is not None:
+        if float(momentum) > 0.03:
+            up += 1
+        elif float(momentum) < -0.03:
+            down += 1
+    if volume_ratio is not None and momentum is not None and float(volume_ratio) >= 1.2:
+        if float(momentum) > 0:
+            up += 1
+        elif float(momentum) < 0:
+            down += 1
+    return up, down
+
+
 def show_directional_scores(snapshot, market):
-    up = int(snapshot.get("upScore", 0) or 0)
-    down = int(snapshot.get("downScore", 0) or 0)
+    indicators = snapshot.get("indicators", {})
+    up = snapshot.get("upScore")
+    down = snapshot.get("downScore")
+    # Older cached snapshots or mismatched engine versions may omit score
+    # fields. Recalculate from the live indicator values instead of showing 0/7.
+    if up is None or down is None or (int(up or 0) == 0 and int(down or 0) == 0):
+        up, down = calculate_directional_scores(snapshot, indicators)
+    up, down = int(up or 0), int(down or 0)
     difference = up - down
     st.subheader("Directional scoring")
     left, right = st.columns(2)
