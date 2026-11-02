@@ -119,14 +119,41 @@ def candle_chart(data, height=440):
     )
     st.plotly_chart(fig, use_container_width=True)
 
-def show_signal_meter(checks):
+def show_signal_meter(snapshot, indicators):
+    # Prefer checks supplied by the engine. If an older cached snapshot lacks
+    # them, rebuild the six transparent checks from the same snapshot data.
+    checks = snapshot.get("checks") or {}
     if not isinstance(checks, dict) or not checks:
-        st.info("Indicator agreement data is unavailable.")
-        return
+        candles = pd.DataFrame(snapshot.get("candles", []))
+        rsi = indicators.get("rsi")
+        ema9 = indicators.get("ema9")
+        ema21 = indicators.get("ema21")
+        ema50 = indicators.get("ema50")
+        macd_info = indicators.get("macd") or {}
+        hist = macd_info.get("histogram")
+        momentum = indicators.get("momentumPct")
+        volume_ratio = indicators.get("volumeRatio")
+        last_close = None
+        if not candles.empty and "close" in candles:
+            last_close = float(candles.sort_values("time").iloc[-1]["close"])
+        checks = {
+            "EMA alignment": (
+                ema9 is not None and ema21 is not None and ema50 is not None
+                and (ema9 > ema21 > ema50 or ema9 < ema21 < ema50)
+            ),
+            "Price vs EMA 9": last_close is not None and ema9 is not None and last_close != float(ema9),
+            "RSI momentum": rsi is not None and (32 <= float(rsi) <= 48 or 52 <= float(rsi) <= 68),
+            "MACD direction": hist is not None and float(hist) != 0,
+            "15m momentum": momentum is not None and abs(float(momentum)) > 0.03,
+            "Volume confirmation": volume_ratio is not None and float(volume_ratio) >= 1.2,
+        }
     passed = sum(bool(v) for v in checks.values())
     total = len(checks)
     st.write(f"**Indicator agreement: {passed}/{total} checks**")
-    st.progress(passed / total)
+    st.progress(passed / total if total else 0)
+    with st.expander("See the six checks"):
+        for label, result in checks.items():
+            st.write(("✓ " if result else "— ") + label)
     st.caption("This measures rule agreement only. It is NOT a win probability or guarantee.")
 
 if page == "Overview":
@@ -140,7 +167,7 @@ if page == "Overview":
     st.subheader("Bitcoin 15-minute candlestick chart")
     candle_chart(snapshot.get("candles", []))
     st.subheader("Signal strength")
-    show_signal_meter(snapshot.get("checks"))
+    show_signal_meter(snapshot, ind)
 
     st.subheader("Signal assessment")
     if signal == "BUY_UP":
@@ -173,7 +200,7 @@ elif page == "Technical Analysis":
     st.write("**Trend:**", str(ind.get("trend", "Unknown")).title())
     candle_chart(snapshot.get("candles", []), height=520)
     st.subheader("Indicator agreement")
-    show_signal_meter(snapshot.get("checks"))
+    show_signal_meter(snapshot, ind)
 
 elif page == "Kalshi Market":
     st.subheader("Kalshi BTC 15-minute market")
