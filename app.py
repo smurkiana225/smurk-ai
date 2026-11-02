@@ -92,15 +92,17 @@ def evaluate_entry(direction, ask_cents, spread_cents, fee_cents,
         return {"ok": False, "reason": "The displayed ask is outside a valid contract price."}
     gross_upside = 100.0 - ask
     net_upside = gross_upside - fee
+    break_even = (ask + fee) / 100.0 * 100.0
     if directional_signal != ("BUY_UP" if direction == "UP" else "BUY_DOWN"):
-        return {"ok": False, "reason": "The directional signal does not confirm this side."}
+        return {"ok": False, "break_even_cents": break_even, "reason": "The directional signal does not confirm this side."}
     if spread_cents is None:
-        return {"ok": False, "reason": "The side's bid/ask spread is unavailable."}
+        return {"ok": False, "break_even_cents": break_even, "reason": "The side's bid/ask spread is unavailable."}
     if float(spread_cents) > max_spread_cents:
-        return {"ok": False, "reason": f"Spread is too wide ({float(spread_cents):.2f}¢; limit {max_spread_cents:.2f}¢)."}
+        return {"ok": False, "break_even_cents": break_even, "reason": f"Spread is too wide ({float(spread_cents):.2f}¢; limit {max_spread_cents:.2f}¢)."}
     if net_upside < min_net_upside_cents:
-        return {"ok": False, "reason": f"Maximum net upside is only {net_upside:.2f}¢ per contract; minimum is {min_net_upside_cents:.2f}¢."}
-    return {"ok": True, "reason": "Direction, spread, and estimated payout screen passed. This is not a guarantee."}
+        return {"ok": False, "break_even_cents": break_even, "reason": f"Maximum net upside is only {net_upside:.2f}¢ per contract; minimum is {min_net_upside_cents:.2f}¢."}
+    return {"ok": False, "break_even_cents": break_even,
+            "reason": f"Price and spread checks pass, but no calibrated win-probability model exists to show an edge over the {break_even:.2f}% break-even threshold. Keep this at WAIT."}
 
 
 def market_countdown(close_time):
@@ -297,8 +299,14 @@ if page == "Overview":
         st.error("BUY DOWN — bearish conditions meet the current rule threshold. Confirm price, spread, and risk before any trade.")
     else:
         st.warning("WAIT — the current conditions do not meet the strategy's confirmation rules.")
-    for reason in snapshot.get("reasons", []):
-        st.write("• " + str(reason))
+    displayed_reasons = [str(reason) for reason in snapshot.get("reasons", [])]
+    for reason in displayed_reasons:
+        st.write("• " + reason)
+    reason_text = " ".join(displayed_reasons).lower()
+    if signal == "BUY_DOWN" and "momentum is positive" in reason_text:
+        st.warning("Mixed evidence: the overall rules lean DOWN, but the last completed 15-minute candle had positive momentum. Treat this as a conflict, not full bearish confirmation.")
+    elif signal == "BUY_UP" and "momentum is negative" in reason_text:
+        st.warning("Mixed evidence: the overall rules lean UP, but the last completed 15-minute candle had negative momentum. Treat this as a conflict, not full bullish confirmation.")
     st.caption(snapshot.get("disclaimer", "Signals are research indicators, not verified win probabilities."))
 
     st.divider()
@@ -309,7 +317,7 @@ if page == "Overview":
         min_value=0.0, max_value=10.0, value=0.0, step=0.01,
         key="overview_fee_estimate"
     )
-    st.caption("Enter the fee estimate applicable to your order. Zero is only a placeholder, not confirmation that fees are zero.")
+    st.caption("Enter the actual estimated fee for one contract. Zero is only a placeholder, not confirmation that fees are zero.")
     up_ask = current_ask("UP")
     down_ask = current_ask("DOWN")
     up_spread = current_spread("UP")
@@ -330,12 +338,13 @@ if page == "Overview":
                 st.write(f"Cost per contract: {float(ask_value):.2f}¢ before fees")
                 st.write(f"Maximum net profit if correct: {net:.2f}¢ per contract (estimated)")
                 st.write(f"Maximum loss if incorrect: {float(ask_value) + float(fee_estimate):.2f}¢ per contract (estimated)")
+                st.write(f"Break-even win rate: {float(ask_value) + float(fee_estimate):.2f}% (approx.; before any additional fees)")
             if result["ok"]:
                 st.success("PAPER SCREEN: PASSED")
             else:
                 st.warning("PAPER SCREEN: WAIT")
             st.caption(result["reason"])
-    st.info("The filter requires a matching directional signal, a known spread no wider than 5¢, and at least 10¢ estimated net upside per contract. These are conservative screening rules, not proven profitable thresholds.")
+    st.info("The filter checks direction, spread (5¢ maximum), and potential payout (10¢ minimum). Even when those checks pass, the app stays at WAIT because its indicator scores are not calibrated win probabilities and cannot establish an edge over the contract's break-even rate.")
 
 elif page == "Technical Analysis":
     st.subheader("Technical indicators")

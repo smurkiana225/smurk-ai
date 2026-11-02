@@ -1,19 +1,13 @@
-SMURK AI — Entry Price & Payout Filter
+SMURK AI — Final Safety Filter Update
 
-Replace ONLY app.py in the root of the existing smurk-ai GitHub repository.
-Do not replace engine.py or requirements.txt.
+Replace ONLY app.py in the root of your existing smurk-ai GitHub repository.
+Leave engine.py and requirements.txt unchanged.
 
-This update adds:
-- Side-specific UP/YES and DOWN/NO spread calculations.
-- A conservative paper-only entry screen.
-- Estimated maximum payout and maximum loss per contract.
-- A configurable per-contract fee estimate.
-- WAIT when direction, spread, or potential payout conditions do not pass.
+Changes:
+- Shows approximate break-even win-rate threshold from the displayed ask plus entered fee estimate.
+- Explains that indicator agreement is not a calibrated win probability.
+- Keeps the entry screen at WAIT until a validated probability model can be compared against break-even.
+- Flags contradictory completed-candle momentum versus the overall directional signal.
 
-Screening defaults:
-- Matching directional signal required.
-- Side spread must be 5 cents or less.
-- Estimated net upside if correct must be at least 10 cents per contract.
-
-These are screening rules, not validated profitable thresholds or win probabilities.
-The app remains paper-only and does not submit Kalshi orders.
+This is a paper-only research tool. It does not place orders and does not guarantee results.
+Enter a realistic fee estimate; zero is a placeholder only.
