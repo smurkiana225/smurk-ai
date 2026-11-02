@@ -119,6 +119,29 @@ def candle_chart(data, height=440):
     )
     st.plotly_chart(fig, use_container_width=True)
 
+def show_directional_scores(snapshot, market):
+    up = int(snapshot.get("upScore", 0) or 0)
+    down = int(snapshot.get("downScore", 0) or 0)
+    difference = up - down
+    st.subheader("Directional scoring")
+    left, right = st.columns(2)
+    left.metric("Bullish score", f"{up}/7", "UP")
+    right.metric("Bearish score", f"{down}/7", "DOWN")
+    st.write("**Score comparison**")
+    st.progress(min(1.0, max(up, down) / 7))
+    if difference >= 2:
+        st.info(f"Current indicator bias leans UP by {difference} point(s).")
+    elif difference <= -2:
+        st.info(f"Current indicator bias leans DOWN by {abs(difference)} point(s).")
+    else:
+        st.warning("Bullish and bearish scores are close. Direction is mixed.")
+    up_ask = market.get("yesAskCents") if market else None
+    down_ask = market.get("noAskCents") if market else None
+    a, b = st.columns(2)
+    a.metric("Live UP (YES) ask", cents(up_ask))
+    b.metric("Live DOWN (NO) ask", cents(down_ask))
+    st.caption("Scores count indicator-rule alignment, not odds or win probability. Quotes are live only when the market provider reports them; confirm the order book before trading.")
+
 def show_signal_meter(snapshot, indicators):
     # Prefer checks supplied by the engine. If an older cached snapshot lacks
     # them, rebuild the six transparent checks from the same snapshot data.
@@ -166,6 +189,7 @@ if page == "Overview":
 
     st.subheader("Bitcoin 15-minute candlestick chart")
     candle_chart(snapshot.get("candles", []))
+    show_directional_scores(snapshot, market)
     st.subheader("Signal strength")
     show_signal_meter(snapshot, ind)
 
@@ -199,6 +223,7 @@ elif page == "Technical Analysis":
              "N/A" if ind.get("volumeRatio") is None else f'{ind["volumeRatio"]:.2f}x')
     st.write("**Trend:**", str(ind.get("trend", "Unknown")).title())
     candle_chart(snapshot.get("candles", []), height=520)
+    show_directional_scores(snapshot, market)
     st.subheader("Indicator agreement")
     show_signal_meter(snapshot, ind)
 
