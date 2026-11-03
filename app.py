@@ -23,10 +23,11 @@ with st.sidebar:
     st.subheader("SMURK AI")
     page = st.radio("Navigation", [
         "Overview", "Technical Analysis", "Kalshi Market",
-        "Trade Planner", "Auto Paper Trader", "Paper Journal", "Settings"
+        "Trade Planner", "Auto Paper Trader", "Trade Vault", "Paper Journal", "Settings"
     ])
     st.divider()
     st.warning("PAPER MODE ONLY — no real-money orders are placed.")
+    st.caption("Live refresh is active only while this app page/session is open.")
     refresh = st.button("Refresh market data", use_container_width=True)
 
 @st.cache_data(ttl=15, show_spinner=False)
@@ -439,10 +440,11 @@ elif page == "Auto Paper Trader":
 
     if "auto_paper_enabled" not in st.session_state:
         st.session_state.auto_paper_enabled = False
+    import trade_store
     if "auto_paper_trades" not in st.session_state:
-        st.session_state.auto_paper_trades = []
+        st.session_state.auto_paper_trades = trade_store.load_trades()
     if "auto_paper_seen" not in st.session_state:
-        st.session_state.auto_paper_seen = set()
+        st.session_state.auto_paper_seen = {t.get("ticker") for t in st.session_state.auto_paper_trades if t.get("ticker")}
     if "auto_paper_settings" not in st.session_state:
         st.session_state.auto_paper_settings = {
             "contracts": 1, "fee_cents": 1.0, "max_ask_cents": 80.0,
@@ -492,6 +494,7 @@ elif page == "Auto Paper Trader":
         # Resolve any previously opened paper contracts using Kalshi's public market result.
         resolved = paper_trader.resolve_trades(st.session_state.auto_paper_trades)
         st.session_state.auto_paper_trades = resolved
+        trade_store.save_trades(resolved)
 
         todays = [t for t in resolved if t.get("opened_at", "")[:10] == datetime.now(timezone.utc).date().isoformat()]
         realized_today = sum(float(t.get("net_pnl_dollars", 0) or 0) for t in todays if t.get("status") == "SETTLED")
@@ -511,7 +514,9 @@ elif page == "Auto Paper Trader":
                     agreement=agreement, close_time=market.get("closeTime"),
                     title=market.get("title")
                 )
+                record["trade_id"] = f"{ticker}_{record.get('opened_at', '')}"
                 st.session_state.auto_paper_trades.append(record)
+                trade_store.save_trades([record])
                 st.session_state.auto_paper_seen.add(ticker)
                 st.success(f"Automatic paper entry recorded: {side} / {ticker}")
             else:
@@ -521,7 +526,12 @@ elif page == "Auto Paper Trader":
             st.session_state.auto_paper_enabled = False
         else:
             st.info("Scanning. No new eligible market entry on this refresh.")
-        st.caption("Automatic scan refreshes every 15 seconds while this page is open. Keep this page active; closing the app or losing the session stops scanning.")
+        st.caption("Automatic scan refreshes every 15 seconds while this page is open. Closing the app or losing the session stops scanning.")
+        try:
+            from streamlit_autorefresh import st_autorefresh
+            st_autorefresh(interval=15_000, key="smurk_auto_scan_refresh")
+        except ImportError:
+            st.warning("Install streamlit-autorefresh from the updated requirements.txt to enable timed refresh.")
     else:
         st.info("Scanner is OFF. Start it above when you're ready to collect paper results.")
 
@@ -546,8 +556,36 @@ elif page == "Auto Paper Trader":
     if st.button("Clear automatic paper history"):
         st.session_state.auto_paper_trades = []
         st.session_state.auto_paper_seen = set()
+        trade_store.clear_trades()
         st.rerun()
 
+
+elif page == "Trade Vault":
+    import trade_store
+    st.subheader("SMURK AI Trade Vault")
+    st.caption("A combined history of automatic paper trades saved in the app database.")
+    vault_trades = trade_store.load_trades()
+    if vault_trades:
+        vault = pd.DataFrame(vault_trades)
+        settled = vault[vault.get("status", pd.Series(dtype=str)) == "SETTLED"] if "status" in vault else pd.DataFrame()
+        wins = int((pd.to_numeric(settled.get("net_pnl_dollars", pd.Series(dtype=float)), errors="coerce") > 0).sum()) if not settled.empty else 0
+        pnl = pd.to_numeric(settled.get("net_pnl_dollars", pd.Series(dtype=float)), errors="coerce").fillna(0).sum() if not settled.empty else 0.0
+        a,b,c,d = st.columns(4)
+        a.metric("Total trades", len(vault))
+        b.metric("Open", int((vault.get("status", pd.Series(dtype=str)) == "OPEN").sum()))
+        c.metric("Win rate", f"{wins / len(settled):.1%}" if not settled.empty else "—")
+        d.metric("Settled paper P/L", f"${pnl:+.2f}")
+        filt = st.selectbox("Show trades", ["All", "Open", "Settled", "Winners", "Losers"])
+        view = vault.copy()
+        if filt == "Open": view = view[view.status == "OPEN"]
+        elif filt == "Settled": view = view[view.status == "SETTLED"]
+        elif filt == "Winners": view = view[pd.to_numeric(view.net_pnl_dollars, errors="coerce") > 0]
+        elif filt == "Losers": view = view[pd.to_numeric(view.net_pnl_dollars, errors="coerce") < 0]
+        st.dataframe(view, use_container_width=True, hide_index=True)
+        st.download_button("Download all-time Trade Vault CSV", vault.to_csv(index=False).encode("utf-8"), "smurk_ai_trade_vault_all_time.csv", "text/csv")
+    else:
+        st.info("Your Trade Vault is empty. Start the automatic paper scanner to begin recording trades.")
+    st.caption("Storage note: SQLite saves across Streamlit reruns on the same persistent disk. Some hosted deployments replace local files during rebuilds/restarts; configure a persistent disk or external database for guaranteed long-term retention.")
 
 elif page == "Paper Journal":
     st.subheader("Paper-trading journal")
@@ -590,7 +628,8 @@ else:
     st.write("**Automatic paper scanner:** Runs every app refresh while its page is open; it stops when the session ends.")
     st.write("**Live order placement:** Not implemented and disabled.")
     st.write("**Market refresh:** 15-second cache; use Refresh market data for an immediate request.")
-    st.write("**Journal storage:** Current app session; export CSV to keep a copy.")
+    st.write("**Automatic trade storage:** SQLite Trade Vault; set SMURK_DB_PATH to a persistent disk location when available.")
+    st.write("**Background scanning:** Not active when the Streamlit app/session is closed. A separate always-on worker is a future deployment step.")
     st.write("**Data providers:** Binance with Coinbase fallback; Kalshi public market endpoints.")
     st.warning("Never enter Kalshi API secrets into this app. Authenticated order placement is not included.")
     st.caption("Directional signals are not verified win probabilities and do not guarantee profit.")
