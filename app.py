@@ -23,7 +23,7 @@ with st.sidebar:
     st.subheader("SMURK AI")
     page = st.radio("Navigation", [
         "Overview", "Technical Analysis", "Kalshi Market",
-        "Trade Planner", "Paper Journal", "Settings"
+        "Trade Planner", "Auto Paper Trader", "Paper Journal", "Settings"
     ])
     st.divider()
     st.warning("PAPER MODE ONLY — no real-money orders are placed.")
@@ -430,6 +430,125 @@ elif page == "Trade Planner":
         c.metric("Planned net P/L", money(plan.get("plannedNetPnl")))
         st.json(plan)
 
+
+elif page == "Auto Paper Trader":
+    import paper_trader
+
+    st.subheader("Automatic paper trader")
+    st.caption("Scans while this page is open and the app session is active. Paper orders only — no Kalshi orders are submitted.")
+
+    if "auto_paper_enabled" not in st.session_state:
+        st.session_state.auto_paper_enabled = False
+    if "auto_paper_trades" not in st.session_state:
+        st.session_state.auto_paper_trades = []
+    if "auto_paper_seen" not in st.session_state:
+        st.session_state.auto_paper_seen = set()
+    if "auto_paper_settings" not in st.session_state:
+        st.session_state.auto_paper_settings = {
+            "contracts": 1, "fee_cents": 1.0, "max_ask_cents": 80.0,
+            "max_spread_cents": 2.0, "min_agreement": 5,
+            "daily_trade_limit": 6, "daily_loss_limit_dollars": 3.0
+        }
+
+    st.warning("Experimental paper simulation. Indicator scores are not calibrated win probabilities. This cannot guarantee profit and is not ready for real-money automation.")
+    s1, s2 = st.columns(2)
+    with s1:
+        st.metric("Scanner", "ON" if st.session_state.auto_paper_enabled else "OFF")
+        if st.button("Start automatic paper scanning" if not st.session_state.auto_paper_enabled else "Pause scanner", type="primary"):
+            st.session_state.auto_paper_enabled = not st.session_state.auto_paper_enabled
+            st.rerun()
+    with s2:
+        st.metric("Current signal", str(signal).replace("_", " "))
+        st.metric("Current Kalshi market", market.get("ticker") or "Unavailable")
+
+    st.markdown("#### Risk limits")
+    a, b, c = st.columns(3)
+    contracts = a.number_input("Contracts per paper entry", 1, 5, 1, key="auto_contracts")
+    fee_cents = b.number_input("Estimated fee per contract (¢)", 0.0, 10.0, 1.0, 0.1, key="auto_fee")
+    max_ask = c.number_input("Maximum entry ask (¢)", 1.0, 99.0, 80.0, 1.0, key="auto_maxask")
+    d, e, f = st.columns(3)
+    max_spread = d.number_input("Maximum spread (¢)", 0.1, 10.0, 2.0, 0.1, key="auto_spread")
+    min_agreement = e.number_input("Minimum indicator checks", 1, 6, 5, key="auto_agreement")
+    daily_limit = f.number_input("Maximum paper entries/day", 1, 30, 6, key="auto_daily_limit")
+    daily_loss = st.number_input("Daily simulated loss stop ($)", 0.5, 100.0, 3.0, 0.5, key="auto_daily_loss")
+
+    st.caption("The scanner takes at most one paper entry per unique Kalshi ticker. It only records a trade when the signal, quote, spread, and indicator-agreement filters pass. It never submits a real order.")
+
+    checks = snapshot.get("checks") or {}
+    if not isinstance(checks, dict) or not checks:
+        _, _ = calculate_directional_scores(snapshot, ind)
+        # Reuse the visible meter's reconstructed checks for scanner gating.
+        checks = {
+            "EMA alignment": ind.get("ema9") is not None and ind.get("ema21") is not None and ind.get("ema50") is not None and (ind["ema9"] > ind["ema21"] > ind["ema50"] or ind["ema9"] < ind["ema21"] < ind["ema50"]),
+            "Price vs EMA 9": bool(snapshot.get("candles")) and ind.get("ema9") is not None and float(snapshot["candles"][-1]["close"]) != float(ind["ema9"]),
+            "RSI momentum": ind.get("rsi") is not None and (32 <= float(ind["rsi"]) <= 48 or 52 <= float(ind["rsi"]) <= 68),
+            "MACD direction": (ind.get("macd") or {}).get("histogram") not in (None, 0),
+            "15m momentum": ind.get("momentumPct") is not None and abs(float(ind["momentumPct"])) > 0.03,
+            "Volume confirmation": ind.get("volumeRatio") is not None and float(ind["volumeRatio"]) >= 1.2,
+        }
+    agreement = sum(bool(v) for v in checks.values())
+
+    if st.session_state.auto_paper_enabled:
+        # Resolve any previously opened paper contracts using Kalshi's public market result.
+        resolved = paper_trader.resolve_trades(st.session_state.auto_paper_trades)
+        st.session_state.auto_paper_trades = resolved
+
+        todays = [t for t in resolved if t.get("opened_at", "")[:10] == datetime.now(timezone.utc).date().isoformat()]
+        realized_today = sum(float(t.get("net_pnl_dollars", 0) or 0) for t in todays if t.get("status") == "SETTLED")
+        can_scan = len(todays) < int(daily_limit) and realized_today > -float(daily_loss)
+
+        ticker = market.get("ticker") if market else None
+        side = "UP" if signal == "BUY_UP" else "DOWN" if signal == "BUY_DOWN" else None
+        ask = market.get("yesAskCents") if side == "UP" and market else market.get("noAskCents") if side == "DOWN" and market else None
+        bid = market.get("yesBidCents") if side == "UP" and market else market.get("noBidCents") if side == "DOWN" and market else None
+        spread = (float(ask) - float(bid)) if ask is not None and bid is not None else None
+        if can_scan and side and ticker and ticker not in st.session_state.auto_paper_seen:
+            if ask is not None and spread is not None and 0 < float(ask) <= float(max_ask) and 0 <= spread <= float(max_spread) and agreement >= int(min_agreement):
+                record = paper_trader.make_trade(
+                    ticker=ticker, side=side, ask_cents=float(ask),
+                    contracts=int(contracts), fee_cents=float(fee_cents),
+                    btc_price=snapshot.get("price"), signal=signal,
+                    agreement=agreement, close_time=market.get("closeTime"),
+                    title=market.get("title")
+                )
+                st.session_state.auto_paper_trades.append(record)
+                st.session_state.auto_paper_seen.add(ticker)
+                st.success(f"Automatic paper entry recorded: {side} / {ticker}")
+            else:
+                st.info("No entry: the signal or one of the configured quote/risk filters did not pass.")
+        elif not can_scan:
+            st.error("Daily paper limit or simulated loss stop reached. Scanner is paused for safety.")
+            st.session_state.auto_paper_enabled = False
+        else:
+            st.info("Scanning. No new eligible market entry on this refresh.")
+        st.caption("Automatic scan refreshes every 15 seconds while this page is open. Keep this page active; closing the app or losing the session stops scanning.")
+    else:
+        st.info("Scanner is OFF. Start it above when you're ready to collect paper results.")
+
+    trades = st.session_state.auto_paper_trades
+    if trades:
+        frame = pd.DataFrame(trades)
+        st.markdown("#### Paper positions")
+        show_cols = [c for c in ["opened_at", "ticker", "side", "ask_cents", "contracts", "fee_cents", "status", "settlement", "net_pnl_dollars"] if c in frame.columns]
+        st.dataframe(frame[show_cols], use_container_width=True)
+        settled = [t for t in trades if t.get("status") == "SETTLED"]
+        wins = sum(1 for t in settled if float(t.get("net_pnl_dollars", 0)) > 0)
+        pnl = sum(float(t.get("net_pnl_dollars", 0) or 0) for t in settled)
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Settled paper trades", len(settled))
+        m2.metric("Wins", f"{wins}/{len(settled)}" if settled else "0")
+        m3.metric("Realized paper P/L", f"${pnl:+.2f}")
+        csv = frame.to_csv(index=False).encode("utf-8")
+        st.download_button("Download automatic paper-trade CSV", csv, "smurk_ai_auto_paper_trades.csv", "text/csv")
+    else:
+        st.info("No automatic paper entries recorded yet.")
+
+    if st.button("Clear automatic paper history"):
+        st.session_state.auto_paper_trades = []
+        st.session_state.auto_paper_seen = set()
+        st.rerun()
+
+
 elif page == "Paper Journal":
     st.subheader("Paper-trading journal")
     if "journal" not in st.session_state:
@@ -468,6 +587,7 @@ elif page == "Paper Journal":
 else:
     st.subheader("Settings")
     st.write("**Trading mode:** PAPER ONLY")
+    st.write("**Automatic paper scanner:** Runs every app refresh while its page is open; it stops when the session ends.")
     st.write("**Live order placement:** Not implemented and disabled.")
     st.write("**Market refresh:** 15-second cache; use Refresh market data for an immediate request.")
     st.write("**Journal storage:** Current app session; export CSV to keep a copy.")
