@@ -1,37 +1,13 @@
 {
   "scanStatus": "success",
-  "scannedAt": "2026-11-12T20:38:32.616213Z",
+  "scannedAt": "2026-11-12T21:27:54.027841Z",
   "snapshot": {
-    "price": 71356.56,
-    "priceChange24h": -4.3442742609749745,
-    "asOf": "2026-11-12T20:38:32.845769Z",
+    "price": 71533.4,
+    "priceChange24h": -3.729150606586552,
+    "asOf": "2026-11-12T21:27:54.493991Z",
     "source": "Coinbase",
     "dataStatus": "live",
     "candles": [
-      {
-        "time": "2026-11-11T22:15:00Z",
-        "open": 74386.03,
-        "high": 74475.04,
-        "low": 74204.4,
-        "close": 74215.45,
-        "volume": 85.9477826
-      },
-      {
-        "time": "2026-11-11T22:30:00Z",
-        "open": 74215.45,
-        "high": 74242.89,
-        "low": 73975.49,
-        "close": 74005.03,
-        "volume": 221.87085926
-      },
-      {
-        "time": "2026-11-11T22:45:00Z",
-        "open": 74005.03,
-        "high": 74043.55,
-        "low": 73791.59,
-        "close": 73850.0,
-        "volume": 140.10413448
-      },
       {
         "time": "2026-11-11T23:00:00Z",
         "open": 73850.0,
@@ -723,50 +699,74 @@
       {
         "time": "2026-11-12T20:30:00Z",
         "open": 71380.99,
-        "high": 71402.43,
-        "low": 71310.19,
-        "close": 71310.19,
-        "volume": 42.25713805
+        "high": 71410.5,
+        "low": 71307.84,
+        "close": 71396.08,
+        "volume": 140.67221178
+      },
+      {
+        "time": "2026-11-12T20:45:00Z",
+        "open": 71403.34,
+        "high": 71521.06,
+        "low": 71339.54,
+        "close": 71341.7,
+        "volume": 149.48250029
+      },
+      {
+        "time": "2026-11-12T21:00:00Z",
+        "open": 71341.34,
+        "high": 71464.26,
+        "low": 71280.82,
+        "close": 71397.78,
+        "volume": 192.02908973
+      },
+      {
+        "time": "2026-11-12T21:15:00Z",
+        "open": 71397.78,
+        "high": 71505.29,
+        "low": 71397.78,
+        "close": 71463.14,
+        "volume": 41.72234005
       }
     ],
     "indicators": {
-      "rsi": 40.98311592975326,
-      "ema9": 71508.52813977806,
-      "ema21": 71688.76303617032,
-      "ema50": 72188.93838477413,
+      "rsi": 32.38630309488104,
+      "ema9": 71469.17194357117,
+      "ema21": 71623.99815158214,
+      "ema50": 72104.08180858557,
       "macd": {
-        "line": -223.6256149881374,
-        "signal": -233.7833078662606,
-        "histogram": 10.157692878123214,
+        "line": -200.95265820306668,
+        "signal": -221.2593081641347,
+        "histogram": 20.30664996106802,
         "direction": "bullish"
       },
-      "volumeRatio": 0.2602594092131671,
-      "momentumPct": -0.09918607180987582,
-      "trend": "bearish"
+      "volumeRatio": 0.2797232868704541,
+      "momentumPct": 0.09154346255584311,
+      "trend": "neutral"
     },
-    "signal": "BUY_DOWN",
+    "signal": "WAIT",
     "confidence": null,
-    "signalStrength": 5,
+    "signalStrength": 4,
     "reasons": [
       "EMA 9 < EMA 21 < EMA 50 (bearish alignment)",
       "BTC close is below EMA 9",
       "RSI supports negative momentum",
       "MACD histogram is positive",
-      "Last completed 15-minute candle momentum is negative",
+      "Last completed 15-minute candle momentum is positive",
       "Volume does not provide strong confirmation"
     ],
     "kalshi": {
       "status": "live",
-      "ticker": "KXBTC15M-26NOV121545-45",
+      "ticker": "KXBTC15M-26NOV121630-30",
       "title": "BTC price up in next 15 mins?",
-      "yesBidCents": 43.0,
-      "yesAskCents": 44.0,
-      "noBidCents": 56.0,
-      "noAskCents": 57.0,
-      "yesDepth": 1826141.68,
-      "noDepth": 1805941.81,
-      "spreadCents": 1.0,
-      "closeTime": "2026-11-12T20:45:00Z",
+      "yesBidCents": 99.4,
+      "yesAskCents": 99.5,
+      "noBidCents": 0.5,
+      "noAskCents": 0.6,
+      "yesDepth": 1850273.88,
+      "noDepth": 243460.69,
+      "spreadCents": 0.1,
+      "closeTime": "2026-11-12T21:30:00Z",
       "error": null
     },
     "tradingMode": "PAPER_ONLY",
