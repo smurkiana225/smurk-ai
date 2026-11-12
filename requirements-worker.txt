@@ -1,0 +1,2 @@
+# Add these to the existing app requirements, or use this file for the worker service.
+psycopg[binary]>=3.2,<4

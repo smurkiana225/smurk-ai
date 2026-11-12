@@ -1,0 +1,30 @@
+# Render Blueprint: deploy this as a separate Background Worker.
+# Keep the existing Streamlit app service; this worker runs independently.
+services:
+  - type: worker
+    name: smurk-ai-background
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt && pip install -r requirements-worker.txt
+    startCommand: python worker.py
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: POLL_SECONDS
+        value: "30"
+      - key: MAX_PAPER_ENTRIES_PER_DAY
+        value: "6"
+      - key: MAX_DAILY_PAPER_LOSS_USD
+        value: "3"
+      - key: PAPER_CONTRACTS
+        value: "1"
+      - key: ESTIMATED_FEE_CENTS
+        value: "1"
+      - key: MAX_ENTRY_ASK_CENTS
+        value: "80"
+      - key: MAX_SPREAD_CENTS
+        value: "2"
+      - key: MIN_INDICATOR_CHECKS
+        value: "5"
+      - key: MIN_MAX_PROFIT_CENTS
+        value: "10"
