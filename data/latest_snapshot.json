@@ -1,53 +1,13 @@
 {
   "scanStatus": "success",
-  "scannedAt": "2026-11-13T12:25:28.300632Z",
+  "scannedAt": "2026-11-13T13:40:01.716153Z",
   "snapshot": {
-    "price": 69224.24,
-    "priceChange24h": -4.925301162458027,
-    "asOf": "2026-11-13T12:25:28.646800Z",
+    "price": 69942.43,
+    "priceChange24h": -3.4150047047990686,
+    "asOf": "2026-11-13T13:40:02.084786Z",
     "source": "Coinbase",
     "dataStatus": "live",
     "candles": [
-      {
-        "time": "2026-11-12T14:00:00Z",
-        "open": 72415.42,
-        "high": 72494.32,
-        "low": 72062.79,
-        "close": 72346.69,
-        "volume": 203.20123969
-      },
-      {
-        "time": "2026-11-12T14:15:00Z",
-        "open": 72346.69,
-        "high": 72367.79,
-        "low": 71670.0,
-        "close": 71776.74,
-        "volume": 532.70289981
-      },
-      {
-        "time": "2026-11-12T14:30:00Z",
-        "open": 71776.74,
-        "high": 72199.15,
-        "low": 71500.0,
-        "close": 71535.32,
-        "volume": 632.8908127
-      },
-      {
-        "time": "2026-11-12T14:45:00Z",
-        "open": 71535.37,
-        "high": 71772.69,
-        "low": 71199.0,
-        "close": 71556.04,
-        "volume": 645.3726277
-      },
-      {
-        "time": "2026-11-12T15:00:00Z",
-        "open": 71556.03,
-        "high": 71614.64,
-        "low": 71151.01,
-        "close": 71312.52,
-        "volume": 503.61029489
-      },
       {
         "time": "2026-11-12T15:15:00Z",
         "open": 71312.51,
@@ -724,49 +684,89 @@
         "time": "2026-11-13T12:15:00Z",
         "open": 69396.0,
         "high": 69447.01,
-        "low": 69251.65,
-        "close": 69263.35,
-        "volume": 280.01118169
+        "low": 69161.4,
+        "close": 69219.56,
+        "volume": 300.11722059
+      },
+      {
+        "time": "2026-11-13T12:30:00Z",
+        "open": 69219.56,
+        "high": 69335.66,
+        "low": 69140.85,
+        "close": 69233.81,
+        "volume": 76.2343614
+      },
+      {
+        "time": "2026-11-13T12:45:00Z",
+        "open": 69233.81,
+        "high": 69273.65,
+        "low": 69115.31,
+        "close": 69135.4,
+        "volume": 133.13680161
+      },
+      {
+        "time": "2026-11-13T13:00:00Z",
+        "open": 69135.4,
+        "high": 69200.99,
+        "low": 69033.57,
+        "close": 69154.13,
+        "volume": 120.0201277
+      },
+      {
+        "time": "2026-11-13T13:15:00Z",
+        "open": 69153.79,
+        "high": 69287.68,
+        "low": 69096.42,
+        "close": 69244.06,
+        "volume": 126.07809959
+      },
+      {
+        "time": "2026-11-13T13:30:00Z",
+        "open": 69353.12,
+        "high": 70141.87,
+        "low": 69239.83,
+        "close": 70096.43,
+        "volume": 295.35996146
       }
     ],
     "indicators": {
-      "rsi": 73.75515248278731,
-      "ema9": 69234.08885375063,
-      "ema21": 69143.07155518097,
-      "ema50": 69503.92850032134,
+      "rsi": 71.68086201651954,
+      "ema9": 69384.91932935175,
+      "ema21": 69241.553300217,
+      "ema50": 69480.75819336654,
       "macd": {
-        "line": 30.138840204570442,
-        "signal": -42.13238711312958,
-        "histogram": 72.27122731770002,
+        "line": 91.80416534880351,
+        "signal": 14.462489443698788,
+        "histogram": 77.34167590510472,
         "direction": "bullish"
       },
-      "volumeRatio": 2.0721778688010537,
-      "momentumPct": -0.19116372828925643,
+      "volumeRatio": 2.128108713534609,
+      "momentumPct": 1.2309647932255752,
       "trend": "neutral"
     },
     "signal": "WAIT",
     "confidence": null,
-    "signalStrength": 2,
+    "signalStrength": 4,
     "reasons": [
       "EMA alignment is mixed",
       "BTC close is above EMA 9",
       "RSI is elevated; avoid chasing strength",
       "MACD histogram is positive",
-      "Last completed 15-minute candle momentum is negative",
-      "Above-average volume accompanies negative momentum"
+      "Last completed 15-minute candle momentum is positive",
+      "Above-average volume accompanies positive momentum"
     ],
     "kalshi": {
       "status": "live",
-      "ticker": "KXBTC15M-26NOV130730-30",
+      "ticker": "KXBTC15M-26NOV130845-45",
       "title": "BTC price up in next 15 mins?",
-      "yesBidCents": 0.6,
-      "yesAskCents": 0.7,
-      "noBidCents": 99.3,
-      "noAskCents": 99.4,
-      "yesDepth": 1344823.57,
-      "noDepth": 2475375.0,
+      "yesBidCents": 99.1,
+      "yesAskCents": 99.2,
+      "noBidCents": 0.8,
+      "noAskCents": 0.9,
+      "yesDepth": 2617917.02,
+      "noDepth": 1628164.7,
       "spreadCents": 0.1,
-      "closeTime": "2026-11-13T12:30:00Z",
+      "closeTime": "2026-11-13T13:45:00Z",
       "error": null
     },
     "tradingMode": "PAPER_ONLY",
