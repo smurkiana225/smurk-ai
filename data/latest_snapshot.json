@@ -1,37 +1,13 @@
 {
   "scanStatus": "success",
-  "scannedAt": "2026-11-19T23:46:42.823590Z",
+  "scannedAt": "2026-11-20T00:30:02.421837Z",
   "snapshot": {
-    "price": 61944.18,
-    "priceChange24h": -1.6473512707101772,
-    "asOf": "2026-11-19T23:46:42.904146Z",
+    "price": 62011.78,
+    "priceChange24h": -1.74997583825415,
+    "asOf": "2026-11-20T00:30:02.670693Z",
     "source": "Coinbase",
     "dataStatus": "live",
     "candles": [
-      {
-        "time": "2026-11-19T01:15:00Z",
-        "open": 63073.04,
-        "high": 63073.04,
-        "low": 62515.0,
-        "close": 62599.14,
-        "volume": 246.37825663
-      },
-      {
-        "time": "2026-11-19T01:30:00Z",
-        "open": 62599.13,
-        "high": 62779.2,
-        "low": 62343.12,
-        "close": 62715.52,
-        "volume": 121.51250986
-      },
-      {
-        "time": "2026-11-19T01:45:00Z",
-        "open": 62715.52,
-        "high": 62834.45,
-        "low": 62602.69,
-        "close": 62781.12,
-        "volume": 81.89707754
-      },
       {
         "time": "2026-11-19T02:00:00Z",
         "open": 62781.11,
@@ -723,51 +699,75 @@
       {
         "time": "2026-11-19T23:30:00Z",
         "open": 61895.08,
-        "high": 61895.08,
+        "high": 61979.78,
         "low": 61700.46,
-        "close": 61792.04,
-        "volume": 129.12648823
+        "close": 61972.27,
+        "volume": 141.7289382
+      },
+      {
+        "time": "2026-11-19T23:45:00Z",
+        "open": 61972.26,
+        "high": 61984.37,
+        "low": 61810.86,
+        "close": 61913.23,
+        "volume": 78.00862043
+      },
+      {
+        "time": "2026-11-20T00:00:00Z",
+        "open": 61911.58,
+        "high": 62054.96,
+        "low": 61867.78,
+        "close": 61966.27,
+        "volume": 74.75339021
+      },
+      {
+        "time": "2026-11-20T00:15:00Z",
+        "open": 61966.27,
+        "high": 62182.31,
+        "low": 61966.27,
+        "close": 62046.69,
+        "volume": 60.18360139
       }
     ],
     "indicators": {
-      "rsi": 43.13919286482377,
-      "ema9": 61927.763091957924,
-      "ema21": 62133.3105773431,
-      "ema50": 62564.01300365875,
+      "rsi": 49.94716151667583,
+      "ema9": 61974.30489521659,
+      "ema21": 62107.45989435529,
+      "ema50": 62518.314683229066,
       "macd": {
-        "line": -266.33484031625267,
-        "signal": -309.26964176570914,
-        "histogram": 42.93480144945647,
+        "line": -201.4425782209728,
+        "signal": -263.96550381314836,
+        "histogram": 62.52292559217557,
         "direction": "bullish"
       },
-      "volumeRatio": 0.5634184322172259,
-      "momentumPct": -0.166475267501065,
-      "trend": "bearish"
+      "volumeRatio": 0.27530567611708695,
+      "momentumPct": 0.12978028207928372,
+      "trend": "neutral"
     },
-    "signal": "BUY_DOWN",
+    "signal": "WAIT",
     "confidence": null,
-    "signalStrength": 5,
+    "signalStrength": 3,
     "reasons": [
       "EMA 9 < EMA 21 < EMA 50 (bearish alignment)",
-      "BTC close is below EMA 9",
-      "RSI supports negative momentum",
+      "BTC close is above EMA 9",
       "MACD histogram is positive",
-      "Last completed 15-minute candle momentum is negative",
-      "Volume does not provide strong confirmation"
+      "Last completed 15-minute candle momentum is positive",
+      "Volume does not provide strong confirmation",
+      "No verified live Kalshi market is available; no entry"
     ],
     "kalshi": {
-      "status": "live",
-      "ticker": "KXBTC15M-26NOV191900-00",
-      "title": "BTC price up in next 15 mins?",
-      "yesBidCents": 36.0,
-      "yesAskCents": 37.0,
-      "noBidCents": 63.0,
-      "noAskCents": 64.0,
-      "yesDepth": 4084876.67,
-      "noDepth": 4333833.66,
-      "spreadCents": 1.0,
-      "closeTime": "2026-11-20T00:00:00Z",
-      "error": null
+      "status": "no_market",
+      "ticker": null,
+      "title": null,
+      "yesBidCents": null,
+      "yesAskCents": null,
+      "noBidCents": null,
+      "noAskCents": null,
+      "yesDepth": null,
+      "noDepth": null,
+      "spreadCents": null,
+      "closeTime": null,
+      "error": "No currently open KXBTC15M contract was returned by Kalshi's public market/event endpoints."
     },
     "tradingMode": "PAPER_ONLY",
     "liveTradingEnabled": false,
