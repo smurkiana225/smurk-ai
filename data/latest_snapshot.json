@@ -1,29 +1,13 @@
 {
   "scanStatus": "success",
-  "scannedAt": "2026-11-21T17:48:41.483058Z",
+  "scannedAt": "2026-11-21T18:25:15.790905Z",
   "snapshot": {
-    "price": 59904.67,
-    "priceChange24h": 1.3846129110601233,
-    "asOf": "2026-11-21T17:48:41.889497Z",
+    "price": 60115.45,
+    "priceChange24h": 3.047696593100488,
+    "asOf": "2026-11-21T18:25:16.292979Z",
     "source": "Coinbase",
     "dataStatus": "live",
     "candles": [
-      {
-        "time": "2026-11-20T19:30:00Z",
-        "open": 58076.9,
-        "high": 58824.09,
-        "low": 57900.0,
-        "close": 58748.42,
-        "volume": 630.66407854
-      },
-      {
-        "time": "2026-11-20T19:45:00Z",
-        "open": 58748.41,
-        "high": 58748.41,
-        "low": 58372.09,
-        "close": 58471.84,
-        "volume": 362.65022727
-      },
       {
         "time": "2026-11-20T20:00:00Z",
         "open": 58471.13,
@@ -724,24 +708,40 @@
         "time": "2026-11-21T17:45:00Z",
         "open": 60019.77,
         "high": 60019.78,
-        "low": 59905.02,
-        "close": 59923.04,
-        "volume": 7.30499199
+        "low": 59846.44,
+        "close": 59967.34,
+        "volume": 62.18112614
+      },
+      {
+        "time": "2026-11-21T18:00:00Z",
+        "open": 59969.43,
+        "high": 60079.13,
+        "low": 59953.3,
+        "close": 59984.14,
+        "volume": 60.55143883
+      },
+      {
+        "time": "2026-11-21T18:15:00Z",
+        "open": 59984.14,
+        "high": 60068.66,
+        "low": 59984.13,
+        "close": 60033.84,
+        "volume": 20.01103391
       }
     ],
     "indicators": {
-      "rsi": 39.80455943595657,
-      "ema9": 59985.895308791594,
-      "ema21": 59712.94702024729,
-      "ema50": 59073.589097900214,
+      "rsi": 43.29915914373556,
+      "ema9": 60000.87379758211,
+      "ema21": 59767.84434076507,
+      "ema50": 59143.20205605753,
       "macd": {
-        "line": 374.9852975259564,
-        "signal": 458.11293843899875,
-        "histogram": -83.12764091304234,
+        "line": 333.378832804774,
+        "signal": 416.9554427568817,
+        "histogram": -83.57660995210773,
         "direction": "bearish"
       },
-      "volumeRatio": 0.031453727225359114,
-      "momentumPct": -0.16116356327255943,
+      "volumeRatio": 0.0930730729828998,
+      "momentumPct": 0.08285523473370304,
       "trend": "neutral"
     },
     "signal": "WAIT",
@@ -749,24 +749,24 @@
     "signalStrength": 4,
     "reasons": [
       "EMA 9 > EMA 21 > EMA 50 (bullish alignment)",
-      "BTC close is below EMA 9",
+      "BTC close is above EMA 9",
       "RSI supports negative momentum",
       "MACD histogram is negative",
-      "Last completed 15-minute candle momentum is negative",
+      "Last completed 15-minute candle momentum is positive",
       "Volume does not provide strong confirmation"
     ],
     "kalshi": {
       "status": "live",
-      "ticker": "KXBTC15M-26NOV211300-00",
+      "ticker": "KXBTC15M-26NOV211330-30",
       "title": "BTC price up in next 15 mins?",
-      "yesBidCents": 22.0,
-      "yesAskCents": 23.0,
-      "noBidCents": 77.0,
-      "noAskCents": 78.0,
-      "yesDepth": 3677303.08,
-      "noDepth": 3741349.17,
-      "spreadCents": 1.0,
-      "closeTime": "2026-11-21T18:00:00Z",
+      "yesBidCents": 94.9,
+      "yesAskCents": 95.0,
+      "noBidCents": 5.0,
+      "noAskCents": 5.1,
+      "yesDepth": 3122670.17,
+      "noDepth": 2706636.9099999997,
+      "spreadCents": 0.1,
+      "closeTime": "2026-11-21T18:30:00Z",
       "error": null
     },
     "tradingMode": "PAPER_ONLY",
