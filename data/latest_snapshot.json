@@ -1,37 +1,13 @@
 {
   "scanStatus": "success",
-  "scannedAt": "2026-11-22T23:12:36.601919Z",
+  "scannedAt": "2026-11-22T23:53:48.153011Z",
   "snapshot": {
-    "price": 60810.05,
-    "priceChange24h": 1.205022800652403,
-    "asOf": "2026-11-22T23:12:37.147124Z",
+    "price": 61183.41,
+    "priceChange24h": 1.826398828346043,
+    "asOf": "2026-11-22T23:53:48.652882Z",
     "source": "Coinbase",
     "dataStatus": "live",
     "candles": [
-      {
-        "time": "2026-11-22T00:45:00Z",
-        "open": 60162.51,
-        "high": 60162.51,
-        "low": 60020.53,
-        "close": 60075.31,
-        "volume": 60.96959488
-      },
-      {
-        "time": "2026-11-22T01:00:00Z",
-        "open": 60075.3,
-        "high": 60106.5,
-        "low": 60027.23,
-        "close": 60076.35,
-        "volume": 40.72099499
-      },
-      {
-        "time": "2026-11-22T01:15:00Z",
-        "open": 60076.34,
-        "high": 60118.38,
-        "low": 59989.45,
-        "close": 59993.79,
-        "volume": 41.93904744
-      },
       {
         "time": "2026-11-22T01:30:00Z",
         "open": 59993.8,
@@ -724,49 +700,73 @@
         "time": "2026-11-22T23:00:00Z",
         "open": 61001.79,
         "high": 61171.08,
-        "low": 60841.87,
-        "close": 60862.81,
-        "volume": 149.72351125
+        "low": 60684.03,
+        "close": 60892.06,
+        "volume": 262.51061536
+      },
+      {
+        "time": "2026-11-22T23:15:00Z",
+        "open": 60892.06,
+        "high": 61042.72,
+        "low": 60835.4,
+        "close": 60929.72,
+        "volume": 63.07148536
+      },
+      {
+        "time": "2026-11-22T23:30:00Z",
+        "open": 60995.54,
+        "high": 61287.57,
+        "low": 60995.54,
+        "close": 61192.24,
+        "volume": 306.72053157
+      },
+      {
+        "time": "2026-11-22T23:45:00Z",
+        "open": 61192.24,
+        "high": 61224.36,
+        "low": 61092.21,
+        "close": 61132.14,
+        "volume": 26.36364344
       }
     ],
     "indicators": {
-      "rsi": 58.562183100809406,
-      "ema9": 60821.813010817474,
-      "ema21": 60777.78286778745,
-      "ema50": 60635.40787333824,
+      "rsi": 70.15637495043985,
+      "ema9": 60959.9540215436,
+      "ema21": 60857.662515681564,
+      "ema50": 60687.167014765786,
       "macd": {
-        "line": 46.70853054810868,
-        "signal": 35.89373057474519,
-        "histogram": 10.814799973363492,
+        "line": 93.50047074016766,
+        "signal": 57.09768839911611,
+        "histogram": 36.40278234105155,
         "direction": "bullish"
       },
-      "volumeRatio": 1.8327589330372047,
-      "momentumPct": -0.22781302447240082,
-      "trend": "bullish"
+      "volumeRatio": 0.2692888656256351,
+      "momentumPct": -0.09821506779290612,
+      "trend": "neutral"
     },
-    "signal": "BUY_UP",
+    "signal": "WAIT",
     "confidence": null,
-    "signalStrength": 5,
+    "signalStrength": 4,
     "reasons": [
       "EMA 9 > EMA 21 > EMA 50 (bullish alignment)",
       "BTC close is above EMA 9",
-      "RSI supports positive momentum",
+      "RSI is elevated; avoid chasing strength",
       "MACD histogram is positive",
       "Last completed 15-minute candle momentum is negative",
-      "Above-average volume accompanies negative momentum"
+      "Volume does not provide strong confirmation"
     ],
     "kalshi": {
       "status": "live",
-      "ticker": "KXBTC15M-26NOV221815-15",
+      "ticker": "KXBTC15M-26NOV221900-00",
       "title": "BTC price up in next 15 mins?",
-      "yesBidCents": 1.3,
-      "yesAskCents": 1.4,
-      "noBidCents": 98.6,
-      "noAskCents": 98.7,
-      "yesDepth": 3060494.12,
-      "noDepth": 2976837.14,
-      "spreadCents": 0.1,
-      "closeTime": "2026-11-22T23:15:00Z",
+      "yesBidCents": 64.0,
+      "yesAskCents": 65.0,
+      "noBidCents": 35.0,
+      "noAskCents": 36.0,
+      "yesDepth": 3294520.36,
+      "noDepth": 2920694.34,
+      "spreadCents": 1.0,
+      "closeTime": "2026-11-23T00:00:00Z",
       "error": null
     },
     "tradingMode": "PAPER_ONLY",
