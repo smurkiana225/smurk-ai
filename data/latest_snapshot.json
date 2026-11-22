@@ -1,37 +1,13 @@
 {
   "scanStatus": "success",
-  "scannedAt": "2026-11-22T16:29:23.014996Z",
+  "scannedAt": "2026-11-22T17:16:33.745264Z",
   "snapshot": {
-    "price": 61130.44,
-    "priceChange24h": 1.9803361039487974,
-    "asOf": "2026-11-22T16:29:23.214980Z",
+    "price": 60727.67,
+    "priceChange24h": 1.2643775336867433,
+    "asOf": "2026-11-22T17:16:34.240314Z",
     "source": "Coinbase",
     "dataStatus": "live",
     "candles": [
-      {
-        "time": "2026-11-21T18:00:00Z",
-        "open": 59969.43,
-        "high": 60079.13,
-        "low": 59953.3,
-        "close": 59984.14,
-        "volume": 60.55143883
-      },
-      {
-        "time": "2026-11-21T18:15:00Z",
-        "open": 59984.14,
-        "high": 60123.5,
-        "low": 59984.13,
-        "close": 60107.69,
-        "volume": 62.08262003
-      },
-      {
-        "time": "2026-11-21T18:30:00Z",
-        "open": 60107.69,
-        "high": 60148.03,
-        "low": 60034.03,
-        "close": 60064.21,
-        "volume": 52.16117021
-      },
       {
         "time": "2026-11-21T18:45:00Z",
         "open": 60064.21,
@@ -725,48 +701,72 @@
         "open": 60983.68,
         "high": 61284.22,
         "low": 60898.03,
-        "close": 61118.85,
-        "volume": 179.21585428
+        "close": 61137.34,
+        "volume": 198.42377121
+      },
+      {
+        "time": "2026-11-22T16:30:00Z",
+        "open": 61138.3,
+        "high": 61324.99,
+        "low": 61126.44,
+        "close": 61260.09,
+        "volume": 112.60215529
+      },
+      {
+        "time": "2026-11-22T16:45:00Z",
+        "open": 61260.09,
+        "high": 61299.62,
+        "low": 61129.56,
+        "close": 61167.67,
+        "volume": 85.72628504
+      },
+      {
+        "time": "2026-11-22T17:00:00Z",
+        "open": 61167.67,
+        "high": 61180.89,
+        "low": 60733.51,
+        "close": 60805.15,
+        "volume": 114.5773521
       }
     ],
     "indicators": {
-      "rsi": 63.27873128110772,
-      "ema9": 60863.093482871875,
-      "ema21": 60707.49208563498,
-      "ema50": 60369.65729635585,
+      "rsi": 55.06311253893659,
+      "ema9": 60952.94595922431,
+      "ema21": 60797.17645046896,
+      "ema50": 60447.95555391375,
       "macd": {
-        "line": 192.40765637416916,
-        "signal": 204.00426026583602,
-        "histogram": -11.59660389166686,
+        "line": 192.82438121208543,
+        "signal": 205.72642314220036,
+        "histogram": -12.902041930114933,
         "direction": "bearish"
       },
-      "volumeRatio": 1.8993879461711065,
-      "momentumPct": 0.22163303007738389,
-      "trend": "bullish"
+      "volumeRatio": 1.0921018827054099,
+      "momentumPct": -0.5926660276580731,
+      "trend": "neutral"
     },
-    "signal": "BUY_UP",
+    "signal": "WAIT",
     "confidence": null,
-    "signalStrength": 6,
+    "signalStrength": 3,
     "reasons": [
       "EMA 9 > EMA 21 > EMA 50 (bullish alignment)",
-      "BTC close is above EMA 9",
+      "BTC close is below EMA 9",
       "RSI supports positive momentum",
       "MACD histogram is negative",
-      "Last completed 15-minute candle momentum is positive",
-      "Above-average volume accompanies positive momentum"
+      "Last completed 15-minute candle momentum is negative",
+      "Volume does not provide strong confirmation"
     ],
     "kalshi": {
       "status": "live",
-      "ticker": "KXBTC15M-26NOV221130-30",
+      "ticker": "KXBTC15M-26NOV221230-30",
       "title": "BTC price up in next 15 mins?",
-      "yesBidCents": 99.9,
-      "yesAskCents": 100.0,
-      "noBidCents": 0.0,
-      "noAskCents": 0.1,
-      "yesDepth": 1065554.3299999998,
-      "noDepth": 0.0,
-      "spreadCents": 0.1,
-      "closeTime": "2026-11-22T16:30:00Z",
+      "yesBidCents": 56.0,
+      "yesAskCents": 57.0,
+      "noBidCents": 43.0,
+      "noAskCents": 44.0,
+      "yesDepth": 4248112.38,
+      "noDepth": 4656528.29,
+      "spreadCents": 1.0,
+      "closeTime": "2026-11-22T17:30:00Z",
       "error": null
     },
     "tradingMode": "PAPER_ONLY",
