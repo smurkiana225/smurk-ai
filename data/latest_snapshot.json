@@ -1,37 +1,13 @@
 {
   "scanStatus": "success",
-  "scannedAt": "2026-11-23T15:35:09.766112Z",
+  "scannedAt": "2026-11-23T16:31:14.146733Z",
   "snapshot": {
-    "price": 63143.12,
-    "priceChange24h": 3.8549773254043016,
-    "asOf": "2026-11-23T15:35:09.845318Z",
+    "price": 62658.67,
+    "priceChange24h": 2.4375621958462697,
+    "asOf": "2026-11-23T16:31:14.628571Z",
     "source": "Coinbase",
     "dataStatus": "live",
     "candles": [
-      {
-        "time": "2026-11-22T17:15:00Z",
-        "open": 60703.25,
-        "high": 60825.61,
-        "low": 60682.67,
-        "close": 60781.81,
-        "volume": 48.42460041
-      },
-      {
-        "time": "2026-11-22T17:30:00Z",
-        "open": 60781.8,
-        "high": 60878.27,
-        "low": 60695.25,
-        "close": 60833.1,
-        "volume": 71.50075489
-      },
-      {
-        "time": "2026-11-22T17:45:00Z",
-        "open": 60833.1,
-        "high": 60854.12,
-        "low": 60715.81,
-        "close": 60740.31,
-        "volume": 76.76192977
-      },
       {
         "time": "2026-11-22T18:00:00Z",
         "open": 60740.3,
@@ -724,49 +700,73 @@
         "time": "2026-11-23T15:30:00Z",
         "open": 63325.2,
         "high": 63413.97,
-        "low": 63188.4,
-        "close": 63203.7,
-        "volume": 99.09594149
+        "low": 62888.1,
+        "close": 62932.13,
+        "volume": 377.90091384
+      },
+      {
+        "time": "2026-11-23T15:45:00Z",
+        "open": 62932.13,
+        "high": 62943.4,
+        "low": 62551.82,
+        "close": 62822.8,
+        "volume": 487.84695492
+      },
+      {
+        "time": "2026-11-23T16:00:00Z",
+        "open": 62822.81,
+        "high": 62867.64,
+        "low": 62395.18,
+        "close": 62693.37,
+        "volume": 493.33003469
+      },
+      {
+        "time": "2026-11-23T16:15:00Z",
+        "open": 62693.38,
+        "high": 62743.79,
+        "low": 62493.87,
+        "close": 62601.54,
+        "volume": 333.7903133
       }
     ],
     "indicators": {
-      "rsi": 66.11616372811498,
-      "ema9": 62938.243329309174,
-      "ema21": 62380.63141958237,
-      "ema50": 61819.434044460424,
+      "rsi": 60.50957896821255,
+      "ema9": 62789.13741657289,
+      "ema21": 62441.22017411946,
+      "ema50": 61906.79324989125,
       "macd": {
-        "line": 532.2785024903715,
-        "signal": 405.14443987145603,
-        "histogram": 127.13406261891544,
-        "direction": "bullish"
+        "line": 398.2758524522869,
+        "signal": 417.1033492190895,
+        "histogram": -18.827496766802597,
+        "direction": "bearish"
       },
-      "volumeRatio": 0.34038025467654326,
-      "momentumPct": -0.19185098378703414,
-      "trend": "bullish"
+      "volumeRatio": 0.9533200576280835,
+      "momentumPct": -0.1464748186291498,
+      "trend": "neutral"
     },
-    "signal": "BUY_UP",
+    "signal": "WAIT",
     "confidence": null,
-    "signalStrength": 5,
+    "signalStrength": 3,
     "reasons": [
       "EMA 9 > EMA 21 > EMA 50 (bullish alignment)",
-      "BTC close is above EMA 9",
+      "BTC close is below EMA 9",
       "RSI supports positive momentum",
-      "MACD histogram is positive",
+      "MACD histogram is negative",
       "Last completed 15-minute candle momentum is negative",
       "Volume does not provide strong confirmation"
     ],
     "kalshi": {
       "status": "live",
-      "ticker": "KXBTC15M-26NOV231045-45",
+      "ticker": "KXBTC15M-26NOV231145-45",
       "title": "BTC price up in next 15 mins?",
-      "yesBidCents": 21.0,
-      "yesAskCents": 22.0,
-      "noBidCents": 78.0,
-      "noAskCents": 79.0,
-      "yesDepth": 4068624.73,
-      "noDepth": 3940804.7199999997,
+      "yesBidCents": 50.0,
+      "yesAskCents": 51.0,
+      "noBidCents": 49.0,
+      "noAskCents": 50.0,
+      "yesDepth": 4841826.72,
+      "noDepth": 5015319.7299999995,
       "spreadCents": 1.0,
-      "closeTime": "2026-11-23T15:45:00Z",
+      "closeTime": "2026-11-23T16:45:00Z",
       "error": null
     },
     "tradingMode": "PAPER_ONLY",
