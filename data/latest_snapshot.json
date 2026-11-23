@@ -1,45 +1,13 @@
 {
   "scanStatus": "success",
-  "scannedAt": "2026-11-23T19:26:41.214283Z",
+  "scannedAt": "2026-11-23T20:20:19.701339Z",
   "snapshot": {
-    "price": 61454.64,
-    "priceChange24h": 1.350557064383829,
-    "asOf": "2026-11-23T19:26:41.418476Z",
+    "price": 61148.96,
+    "priceChange24h": 0.5370727512770748,
+    "asOf": "2026-11-23T20:20:20.186412Z",
     "source": "Coinbase",
     "dataStatus": "live",
     "candles": [
-      {
-        "time": "2026-11-22T21:00:00Z",
-        "open": 60822.3,
-        "high": 61002.8,
-        "low": 60779.37,
-        "close": 60865.75,
-        "volume": 118.07510587
-      },
-      {
-        "time": "2026-11-22T21:15:00Z",
-        "open": 60865.75,
-        "high": 61026.99,
-        "low": 60784.72,
-        "close": 60883.18,
-        "volume": 57.41155658
-      },
-      {
-        "time": "2026-11-22T21:30:00Z",
-        "open": 60883.18,
-        "high": 60960.41,
-        "low": 60836.33,
-        "close": 60955.0,
-        "volume": 52.62088416
-      },
-      {
-        "time": "2026-11-22T21:45:00Z",
-        "open": 60955.0,
-        "high": 60955.01,
-        "low": 60797.39,
-        "close": 60845.97,
-        "volume": 43.17455115
-      },
       {
         "time": "2026-11-22T22:00:00Z",
         "open": 60845.97,
@@ -724,49 +692,80 @@
         "time": "2026-11-23T19:15:00Z",
         "open": 61504.28,
         "high": 61625.04,
-        "low": 61365.6,
-        "close": 61437.99,
-        "volume": 117.365197
+        "low": 61355.13,
+        "close": 61382.28,
+        "volume": 178.77077865
+      },
+      {
+        "time": "2026-11-23T19:30:00Z",
+        "open": 61382.28,
+        "high": 61400.64,
+        "low": 60687.29,
+        "close": 60961.6,
+        "volume": 414.06972789
+      },
+      {
+        "time": "2026-11-23T19:45:00Z",
+        "open": 60961.61,
+        "high": 61242.68,
+        "low": 60957.66,
+        "close": 61190.87,
+        "volume": 135.53700311
+      },
+      {
+        "time": "2026-11-23T20:00:00Z",
+        "open": 61190.86,
+        "high": 61329.63,
+        "low": 61044.1,
+        "close": 61254.72,
+        "volume": 161.24498034
+      },
+      {
+        "time": "2026-11-23T20:15:00Z",
+        "open": 61254.72,
+        "high": 61396.09,
+        "low": 61223.43,
+        "close": 61227.74,
+        "volume": 27.09107282
       }
     ],
     "indicators": {
-      "rsi": 22.38741091973509,
-      "ema9": 61571.319314321474,
-      "ema21": 61833.37759909793,
-      "ema50": 61783.944105792354,
+      "rsi": 31.353043614377725,
+      "ema9": 61336.251027946775,
+      "ema21": 61619.22249924219,
+      "ema50": 61690.650230458676,
       "macd": {
-        "line": -191.71616919124062,
-        "signal": -67.65667202934657,
-        "histogram": -124.05949716189406,
+        "line": -249.6146546555683,
+        "signal": -174.0765246544851,
+        "histogram": -75.5381300010832,
         "direction": "bearish"
       },
-      "volumeRatio": 0.3020206597718632,
-      "momentumPct": -0.10804098045604782,
-      "trend": "neutral"
+      "volumeRatio": 0.09106585531036628,
+      "momentumPct": -0.04404558538509962,
+      "trend": "bearish"
     },
-    "signal": "WAIT",
+    "signal": "BUY_DOWN",
     "confidence": null,
-    "signalStrength": 3,
+    "signalStrength": 5,
     "reasons": [
-      "EMA alignment is mixed",
+      "EMA 9 < EMA 21 < EMA 50 (bearish alignment)",
       "BTC close is below EMA 9",
-      "RSI is depressed; downside may be extended",
       "MACD histogram is negative",
       "Last completed 15-minute candle momentum is negative",
       "Volume does not provide strong confirmation"
     ],
     "kalshi": {
       "status": "live",
-      "ticker": "KXBTC15M-26NOV231430-30",
+      "ticker": "KXBTC15M-26NOV231530-30",
       "title": "BTC price up in next 15 mins?",
-      "yesBidCents": 33.0,
-      "yesAskCents": 34.0,
-      "noBidCents": 66.0,
-      "noAskCents": 67.0,
-      "yesDepth": 3006723.2699999996,
-      "noDepth": 2873259.05,
+      "yesBidCents": 41.0,
+      "yesAskCents": 42.0,
+      "noBidCents": 58.0,
+      "noAskCents": 59.0,
+      "yesDepth": 3638042.0799999996,
+      "noDepth": 3696812.05,
       "spreadCents": 1.0,
-      "closeTime": "2026-11-23T19:30:00Z",
+      "closeTime": "2026-11-23T20:30:00Z",
       "error": null
     },
     "tradingMode": "PAPER_ONLY",
