@@ -27,7 +27,7 @@ with st.sidebar:
     st.subheader("SMURK AI")
     page = st.radio(
         "Navigation",
-        ["Overview", "Background Scanner", "Technical Analysis", "Kalshi Market", "Trade Planner", "Paper Journal", "Settings"]
+        ["Overview", "Background Scanner", "Signal Performance", "Technical Analysis", "Kalshi Market", "Trade Planner", "Paper Journal", "Settings"]
     )
     st.divider()
     st.warning("PAPER MODE ONLY — no real-money orders are placed.")
@@ -111,6 +111,62 @@ def unwrap_scan(record):
             return record[key]
     return record
 
+# ---------- Signal performance evaluation ----------
+def build_signal_performance(history_records, minimum_minutes=15):
+    """Evaluate directional signals against the first later saved BTC price at least 15m later.
+    The observed interval is shown because scheduled scans can be delayed.
+    """
+    parsed = []
+    for record in history_records:
+        snap = unwrap_scan(record)
+        raw_time = (record.get("scannedAt") or record.get("timestamp")
+                    or snap.get("asOf"))
+        try:
+            ts = pd.to_datetime(raw_time, utc=True, errors="coerce")
+            price = float(snap.get("price"))
+            signal_value = str(snap.get("signal", "WAIT")).upper()
+            if pd.isna(ts) or price <= 0:
+                continue
+            parsed.append({"time": ts, "price": price, "signal": signal_value,
+                           "ticker": (snap.get("kalshi") or {}).get("ticker")})
+        except (TypeError, ValueError):
+            continue
+    parsed.sort(key=lambda row: row["time"])
+    evaluated = []
+    for i, row in enumerate(parsed):
+        if row["signal"] not in ("BUY_UP", "BUY_DOWN"):
+            continue
+        target = None
+        for later in parsed[i + 1:]:
+            elapsed = (later["time"] - row["time"]).total_seconds() / 60
+            if elapsed >= minimum_minutes:
+                target = (later, elapsed)
+                break
+        if target is None:
+            continue
+        later, elapsed = target
+        move_pct = (later["price"] / row["price"] - 1) * 100
+        if abs(move_pct) < 0.000001:
+            result = "FLAT"
+            correct = None
+        else:
+            actual_direction = "UP" if move_pct > 0 else "DOWN"
+            predicted_direction = "UP" if row["signal"] == "BUY_UP" else "DOWN"
+            correct = actual_direction == predicted_direction
+            result = "CORRECT" if correct else "INCORRECT"
+        evaluated.append({
+            "Signal time (UTC)": row["time"].isoformat(),
+            "Signal": row["signal"],
+            "BTC at signal": row["price"],
+            "BTC at follow-up": later["price"],
+            "Observed minutes": round(elapsed, 1),
+            "BTC move (%)": round(move_pct, 4),
+            "Result": result,
+            "_correct": correct,
+            "Kalshi ticker": row["ticker"],
+        })
+    return evaluated
+
 # ---------- Overview ----------
 if page == "Background Scanner":
     st.subheader("Scheduled background scans")
@@ -149,6 +205,46 @@ if page == "Background Scanner":
     else:
         st.info("No scan history found yet at data/scan_history.jsonl.")
     st.caption("Background scans are produced by GitHub Actions even when the app is closed. GitHub's scheduled runs can be delayed.")
+
+
+elif page == "Signal Performance":
+    st.subheader("Signal performance tracker")
+    st.caption("Each BUY_UP / BUY_DOWN signal is compared with the first later saved BTC scan at least 15 minutes afterward. The actual elapsed time is shown because scheduled scans may be delayed.")
+    latest, history = read_background_data()
+    evaluated = build_signal_performance(history, minimum_minutes=15)
+    if not evaluated:
+        st.info("Not enough follow-up scans yet. Keep the scheduled scanner running until directional signals have a later scan at least 15 minutes afterward.")
+    else:
+        scored = [row for row in evaluated if row["_correct"] is not None]
+        correct = sum(1 for row in scored if row["_correct"])
+        incorrect = len(scored) - correct
+        flat = len(evaluated) - len(scored)
+        accuracy = (correct / len(scored) * 100) if scored else None
+        a, b, c, d = st.columns(4)
+        a.metric("Evaluated signals", len(evaluated))
+        b.metric("Correct direction", correct)
+        c.metric("Incorrect direction", incorrect)
+        d.metric("Directional hit rate", "—" if accuracy is None else f"{accuracy:.1f}%")
+        if flat:
+            st.caption(f"{flat} signal(s) had no measurable BTC price movement and are excluded from hit rate.")
+        st.divider()
+        st.write("**Performance by signal**")
+        summary_rows = []
+        for label in ("BUY_UP", "BUY_DOWN"):
+            group = [row for row in evaluated if row["Signal"] == label and row["_correct"] is not None]
+            wins = sum(1 for row in group if row["_correct"])
+            summary_rows.append({"Signal": label, "Evaluated": len(group), "Correct": wins,
+                                 "Incorrect": len(group)-wins,
+                                 "Hit rate": f"{(wins/len(group)*100):.1f}%" if group else "—"})
+        st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
+        st.write("**Individual signal outcomes**")
+        display_rows = [{k:v for k,v in row.items() if not k.startswith("_")} for row in reversed(evaluated)]
+        result_df = pd.DataFrame(display_rows)
+        st.dataframe(result_df, use_container_width=True, hide_index=True)
+        st.download_button("Download signal performance CSV",
+                           result_df.to_csv(index=False).encode("utf-8"),
+                           file_name="smurk_signal_performance.csv", mime="text/csv")
+    st.warning("This is a directional BTC-price follow-up test, not Kalshi contract settlement P/L. It does not include contract entry prices, fills, fees, or payout. Do not treat this hit rate as proof of profitability.")
 
 elif page == "Overview":
     c1, c2, c3, c4 = st.columns(4)
