@@ -1,37 +1,13 @@
 {
   "scanStatus": "success",
-  "scannedAt": "2026-11-28T07:47:35.306141Z",
+  "scannedAt": "2026-11-28T08:38:18.378256Z",
   "snapshot": {
-    "price": 59739.77,
-    "priceChange24h": -2.9863085774789013,
-    "asOf": "2026-11-28T07:47:35.401233Z",
+    "price": 59560.15,
+    "priceChange24h": -3.385097983744856,
+    "asOf": "2026-11-28T08:38:18.453325Z",
     "source": "Coinbase",
     "dataStatus": "live",
     "candles": [
-      {
-        "time": "2026-11-27T09:30:00Z",
-        "open": 61652.52,
-        "high": 61780.88,
-        "low": 61592.97,
-        "close": 61621.15,
-        "volume": 38.16792919
-      },
-      {
-        "time": "2026-11-27T09:45:00Z",
-        "open": 61621.14,
-        "high": 61678.66,
-        "low": 61510.22,
-        "close": 61548.59,
-        "volume": 56.63842456
-      },
-      {
-        "time": "2026-11-27T10:00:00Z",
-        "open": 61548.59,
-        "high": 61635.86,
-        "low": 61508.27,
-        "close": 61585.96,
-        "volume": 27.16996415
-      },
       {
         "time": "2026-11-27T10:15:00Z",
         "open": 61586.36,
@@ -723,50 +699,74 @@
       {
         "time": "2026-11-28T07:45:00Z",
         "open": 59692.75,
-        "high": 59739.83,
+        "high": 59807.73,
         "low": 59692.75,
-        "close": 59732.34,
-        "volume": 10.41594768
+        "close": 59775.52,
+        "volume": 55.48796808
+      },
+      {
+        "time": "2026-11-28T08:00:00Z",
+        "open": 59771.92,
+        "high": 59796.06,
+        "low": 59631.52,
+        "close": 59633.63,
+        "volume": 47.66563918
+      },
+      {
+        "time": "2026-11-28T08:15:00Z",
+        "open": 59633.63,
+        "high": 59655.32,
+        "low": 59485.13,
+        "close": 59604.6,
+        "volume": 55.4434126
+      },
+      {
+        "time": "2026-11-28T08:30:00Z",
+        "open": 59604.6,
+        "high": 59626.84,
+        "low": 59482.0,
+        "close": 59558.53,
+        "volume": 16.30000372
       }
     ],
     "indicators": {
-      "rsi": 35.548794174126996,
-      "ema9": 59718.937875787946,
-      "ema21": 59778.9483077224,
-      "ema50": 59923.72903656655,
+      "rsi": 40.63730223575687,
+      "ema9": 59662.06446438789,
+      "ema21": 59736.52520909755,
+      "ema50": 59886.30429879192,
       "macd": {
-        "line": -62.543183545421925,
-        "signal": -54.661024178680826,
-        "histogram": -7.882159366741099,
+        "line": -75.12700612609478,
+        "signal": -61.656139790847675,
+        "histogram": -13.47086633524711,
         "direction": "bearish"
       },
-      "volumeRatio": 0.15326921423799933,
-      "momentumPct": 0.06684263534879609,
-      "trend": "neutral"
+      "volumeRatio": 0.23317419969885436,
+      "momentumPct": -0.07729269217476853,
+      "trend": "bearish"
     },
-    "signal": "WAIT",
+    "signal": "BUY_DOWN",
     "confidence": null,
-    "signalStrength": 4,
+    "signalStrength": 6,
     "reasons": [
       "EMA 9 < EMA 21 < EMA 50 (bearish alignment)",
-      "BTC close is above EMA 9",
+      "BTC close is below EMA 9",
       "RSI supports negative momentum",
       "MACD histogram is negative",
-      "Last completed 15-minute candle momentum is positive",
+      "Last completed 15-minute candle momentum is negative",
       "Volume does not provide strong confirmation"
     ],
     "kalshi": {
       "status": "live",
-      "ticker": "KXBTC15M-26NOV280300-00",
+      "ticker": "KXBTC15M-26NOV280345-45",
       "title": "BTC price up in next 15 mins?",
-      "yesBidCents": 66.0,
-      "yesAskCents": 67.0,
-      "noBidCents": 33.0,
-      "noAskCents": 34.0,
-      "yesDepth": 4576715.09,
-      "noDepth": 4504031.6,
+      "yesBidCents": 25.0,
+      "yesAskCents": 26.0,
+      "noBidCents": 74.0,
+      "noAskCents": 75.0,
+      "yesDepth": 3650941.7600000002,
+      "noDepth": 3596505.07,
       "spreadCents": 1.0,
-      "closeTime": "2026-11-28T08:00:00Z",
+      "closeTime": "2026-11-28T08:45:00Z",
       "error": null
     },
     "tradingMode": "PAPER_ONLY",
